@@ -3,8 +3,10 @@ name: Node CI
 
 # Trigger the workflow on push or pull request
 on:
-  - push
-  - pull_request
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
@@ -12,23 +14,18 @@ jobs:
     # The type of machine to run the job on
     runs-on: windows-latest
 
-    strategy:
-      # Node versions list
-      matrix:
-        node-version: [14.x]
-
     steps:
         # Check-out repository under GitHub workspace
         # https://github.com/actions/checkout
       - uses: actions/checkout@v2
         # Step's name
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 14
         # Configures the node version used on GitHub-hosted runners
         # https://github.com/actions/setup-node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         # The Node.js version to configure
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '14'
       - name: npm install
         # Install project
         run: npm install
@@ -36,13 +33,12 @@ jobs:
         env:
           CI: true
       - name: Run linter
-        # Run Linter
-        run: |
-          make lint
+      # Run Linter
+        run: make lint
       - name: Test & publish code coverage
         # Publish code coverage on Code Climate
         # https://github.com/paambaati/codeclimate-action
-        uses: paambaati/codeclimate-action@v2.7.4
+        uses: paambaati/codeclimate-action@v2.7.5
         # Add Code Climate secret key
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
