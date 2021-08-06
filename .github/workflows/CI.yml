@@ -29,6 +29,9 @@ jobs:
       - name: npm install
         # Install project
         run: npm install
+        # Add environment variables
+        env:
+          CI: true
       - name: Run linter
       # Run Linter
         run: make lint
@@ -42,5 +45,3 @@ jobs:
         with:
           coverageCommand: make test-coverage
           debug: true
-          
-        
