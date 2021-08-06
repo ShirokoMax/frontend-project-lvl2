@@ -32,7 +32,7 @@ jobs:
       - name: npm install
         # Install project
         run: |
-          make install
+          install-deps
         # Add environment variables
         env:
           CI: true
