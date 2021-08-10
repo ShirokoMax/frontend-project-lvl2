@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import * as fs from 'fs';
 import * as path from 'path';
 import * as process from 'process';
 import { Command } from 'commander';
 import genDiff from '../src/gendiff.js';
+import parser from '../src/parsers.js';
 
 const program = new Command();
 
@@ -19,14 +19,8 @@ program
     const path1 = path.resolve(workDirPath, '__fixtures__', filepath1);
     const path2 = path.resolve(workDirPath, '__fixtures__', filepath2);
 
-    let data1;
-    let data2;
-    if (path.extname(path1) === '.json') {
-      data1 = JSON.parse(fs.readFileSync(path1, 'utf8'));
-    }
-    if (path.extname(path2) === '.json') {
-      data2 = JSON.parse(fs.readFileSync(path2, 'utf8'));
-    }
+    const data1 = parser(path1);
+    const data2 = parser(path2);
 
     console.log(genDiff(data1, data2));
   });
