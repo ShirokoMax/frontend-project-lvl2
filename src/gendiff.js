@@ -1,29 +1,57 @@
 import _ from 'lodash';
 
-const genDiff = (data1, data2) => {
+const buildTree = (data1, data2) => {
   const keys1 = Object.keys(data1);
   const keys2 = Object.keys(data2);
 
   const uniqKeys = _.uniq([...keys1, ...keys2]);
   const sortedKeys = _.sortBy(uniqKeys);
 
-  const diff = sortedKeys.map((key) => {
-    let str;
-    if (_.has(data1, key) && _.has(data2, key)) {
-      if (data1[key] !== data2[key]) {
-        str = `  - ${key}: ${data1[key]}\n  + ${key}: ${data2[key]}\n`;
-      } else {
-        str = `    ${key}: ${data1[key]}\n`;
-      }
-    } else if (_.has(data1, key) && !_.has(data2, key)) {
-      str = `  - ${key}: ${data1[key]}\n`;
-    } else if (!_.has(data1, key) && _.has(data2, key)) {
-      str = `  + ${key}: ${data2[key]}\n`;
-    }
-    return str;
-  });
+  return sortedKeys.map((key) => {
+    const value1 = data1[key];
+    const value2 = data2[key];
 
-  return ['{\n', ...diff, '}'].join('');
+    if (!_.has(data1, key)) {
+      return {
+        type: 'added',
+        key,
+        value: value2,
+      };
+    } if (!_.has(data2, key)) {
+      return {
+        type: 'deleted',
+        key,
+        value: value1,
+      };
+    }
+
+    if (_.isPlainObject(value1) && _.isPlainObject(value2)) {
+      return {
+        type: 'nested',
+        key,
+        children: buildTree(value1, value2),
+      };
+    }
+
+    if (value1 !== value2) {
+      return {
+        type: 'changed',
+        key,
+        oldValue: value1,
+        newValue: value2,
+      };
+    }
+    return {
+      type: 'unchanged',
+      key,
+      value: value1,
+    };
+  });
 };
+
+const genDiff = (data1, data2) => ({
+  type: 'root',
+  children: buildTree(data1, data2),
+});
 
 export default genDiff;

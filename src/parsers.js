@@ -1,16 +1,20 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import * as yaml from 'js-yaml';
 
-const parser = (filepath) => {
-  let data;
-  const extname = path.extname(filepath);
-  if (extname === '.json') {
-    data = JSON.parse(fs.readFileSync(filepath, 'utf8'));
-  } else if (extname === '.yml' || extname === '.yaml') {
-    data = yaml.load(fs.readFileSync(filepath, 'utf8'));
+const mapping = {
+  json: JSON.parse,
+  yaml: yaml.load,
+  yml: yaml.load,
+};
+
+const parser = (data, ext) => {
+  const fn = mapping[ext];
+  if (typeof fn !== 'function') {
+    throw new Error(
+      `This extension is not supported. Please specify a file with one of the extensions: ${Object.keys(mapping).join(', ')}`,
+    );
   }
-  return data;
+
+  return fn(data);
 };
 
 export default parser;
