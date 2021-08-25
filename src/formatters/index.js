@@ -1,7 +1,9 @@
 import stylish from './stylish.js';
+import plain from './plain.js';
 
 const mapping = {
   stylish,
+  plain,
 };
 
 const formatter = (tree, format) => {
