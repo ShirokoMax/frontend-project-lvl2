@@ -4,6 +4,7 @@ import plain from './plain.js';
 const mapping = {
   stylish,
   plain,
+  json: JSON.stringify,
 };
 
 const formatter = (tree, format) => {

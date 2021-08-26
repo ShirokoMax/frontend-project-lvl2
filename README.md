@@ -20,3 +20,6 @@
 
 #### Comparing two nested objects from .yml files (plain format):
 [![asciinema gendiff nested yml (-f plain)](https://asciinema.org/a/z2P0yU2MOsj6HE4QR5pr8vKcJ.svg)](https://asciinema.org/a/z2P0yU2MOsj6HE4QR5pr8vKcJ)
+
+#### Comparing two nested objects from .yml files (json format):
+[![asciinema gendiff nested yml (-f json)](https://asciinema.org/a/raOYyTkIiFq6hiL11j5uCmF4N.svg)](https://asciinema.org/a/raOYyTkIiFq6hiL11j5uCmF4N)
