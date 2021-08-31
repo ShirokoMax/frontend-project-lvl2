@@ -1,57 +1,37 @@
-import _ from 'lodash';
+import * as path from 'path';
+import * as process from 'process';
+import * as fs from 'fs';
+import buildTree from './buildtree.js';
+import parse from './parser.js';
+import formatting from './formatters/index.js';
 
-const buildTree = (data1, data2) => {
-  const keys1 = Object.keys(data1);
-  const keys2 = Object.keys(data2);
-
-  const uniqKeys = _.uniq([...keys1, ...keys2]);
-  const sortedKeys = _.sortBy(uniqKeys);
-
-  return sortedKeys.map((key) => {
-    const value1 = data1[key];
-    const value2 = data2[key];
-
-    if (!_.has(data1, key)) {
-      return {
-        type: 'added',
-        key,
-        value: value2,
-      };
-    } if (!_.has(data2, key)) {
-      return {
-        type: 'deleted',
-        key,
-        value: value1,
-      };
-    }
-
-    if (_.isPlainObject(value1) && _.isPlainObject(value2)) {
-      return {
-        type: 'nested',
-        key,
-        children: buildTree(value1, value2),
-      };
-    }
-
-    if (value1 !== value2) {
-      return {
-        type: 'changed',
-        key,
-        oldValue: value1,
-        newValue: value2,
-      };
-    }
-    return {
-      type: 'unchanged',
-      key,
-      value: value1,
-    };
-  });
+const buildFullPath = (filepath) => {
+  const workDirPath = process.cwd();
+  return path.resolve(workDirPath, filepath);
 };
 
-const genDiff = (data1, data2) => ({
-  type: 'root',
-  children: buildTree(data1, data2),
-});
+const getFileData = (filepath) => fs.readFileSync(filepath, 'utf8');
+
+const getFileExt = (filepath) => {
+  const extname = path.extname(filepath);
+  return extname.replace('.', '');
+};
+
+const genDiff = (filepath1, filepath2, format) => {
+  const fullPath1 = buildFullPath(filepath1);
+  const fullPath2 = buildFullPath(filepath2);
+
+  const data1 = getFileData(fullPath1);
+  const data2 = getFileData(fullPath2);
+
+  const ext1 = getFileExt(fullPath1);
+  const ext2 = getFileExt(fullPath2);
+
+  const tree1 = parse(data1, ext1);
+  const tree2 = parse(data2, ext2);
+
+  const diffTree = buildTree(tree1, tree2);
+  return formatting(diffTree, format);
+};
 
 export default genDiff;

@@ -33,10 +33,13 @@ const format = (node, path = []) => {
       return `Property '${propName}' was updated. From ${stringify(node.oldValue)} to ${stringify(node.newValue)}`;
     }
 
+    case 'unchanged': {
+      return '';
+    }
+
     default:
-      break;
+      throw new Error(`There is no handler for this node type: '${node.type}'`);
   }
-  return '';
 };
 
 const plain = (tree) => format(tree);

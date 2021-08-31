@@ -6,7 +6,7 @@ const mapping = {
   yml: yaml.load,
 };
 
-const parser = (data, ext) => {
+const parse = (data, ext) => {
   const fn = mapping[ext];
   if (typeof fn !== 'function') {
     throw new Error(
@@ -17,4 +17,4 @@ const parser = (data, ext) => {
   return fn(data);
 };
 
-export default parser;
+export default parse;

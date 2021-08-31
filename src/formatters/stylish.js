@@ -8,7 +8,8 @@ const stringify = (value, depth) => {
   }
 
   const indent = createIndent(depth);
-  const quoteIndent = createIndent(depth - 0.5);
+  const quoteDepth = 0.5;
+  const quoteIndent = createIndent(depth - quoteDepth);
   const items = Object.keys(value).map((key) => `${indent}  ${key}: ${stringify(value[key], depth + 1)}`);
 
   return `{\n${items.join('\n')}\n${quoteIndent}}`;
@@ -18,7 +19,8 @@ const format = (node, depth) => {
   const indent = createIndent(depth);
   switch (node.type) {
     case 'root': {
-      const items = node.children.flatMap((child) => format(child, depth + 0.5));
+      const rootDepth = 0.5;
+      const items = node.children.flatMap((child) => format(child, depth + rootDepth));
       return `{\n${items.join('\n')}\n}`;
     }
 
@@ -30,7 +32,8 @@ const format = (node, depth) => {
 
     case 'nested': {
       const nestedItems = node.children.flatMap((child) => format(child, depth + 1));
-      const quoteIndent = createIndent(depth + 0.5);
+      const quoteDepth = 0.5;
+      const quoteIndent = createIndent(depth + quoteDepth);
       return `${indent}  ${node.key}: {\n${nestedItems.join('\n')}\n${quoteIndent}}`;
     }
 
@@ -44,9 +47,8 @@ const format = (node, depth) => {
       return `${indent}  ${node.key}: ${stringify(node.value, depth + 1)}`;
 
     default:
-      break;
+      throw new Error(`There is no handler for this node type: '${node.type}'`);
   }
-  return '';
 };
 
 const stylish = (tree) => format(tree, 0);

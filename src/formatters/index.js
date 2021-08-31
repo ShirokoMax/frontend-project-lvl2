@@ -7,7 +7,7 @@ const mapping = {
   json: JSON.stringify,
 };
 
-const formatter = (tree, format) => {
+const formatting = (tree, format) => {
   const fn = mapping[format];
   if (typeof fn !== 'function') {
     throw new Error(
@@ -18,4 +18,4 @@ const formatter = (tree, format) => {
   return fn(tree);
 };
 
-export default formatter;
+export default formatting;
