@@ -7,7 +7,7 @@ const mapping = {
   json: JSON.stringify,
 };
 
-const formatting = (tree, format) => {
+const formatting = (tree, format = 'stylish') => {
   const fn = mapping[format];
   if (typeof fn !== 'function') {
     throw new Error(
