@@ -34,7 +34,7 @@ const buildTree = (tree1, tree2) => {
         };
       }
 
-      if (value1 !== value2) {
+      if (!_.isEqual(value1, value2)) {
         return {
           type: 'changed',
           key,

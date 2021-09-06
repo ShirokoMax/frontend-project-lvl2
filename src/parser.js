@@ -6,11 +6,11 @@ const mapping = {
   yml: yaml.load,
 };
 
-const parse = (data, ext) => {
-  const fn = mapping[ext];
+const parse = (data, type) => {
+  const fn = mapping[type];
   if (typeof fn !== 'function') {
     throw new Error(
-      `This extension is not supported. Please specify a file with one of the extensions: ${Object.keys(mapping).join(', ')}`,
+      `This type is not supported. Please specify one of the next types: ${Object.keys(mapping).join(', ')}`,
     );
   }
 
